@@ -7,3 +7,8 @@ To run, use
 ```
 npm run tauri dev
 ```
+
+## Data Model
+The data model consists of three tables representing physical items (farm, land, and planting) and three tables representing events or logs recorded by members (measurement, quantitative_measurement, and qualitative_measurement).
+
+![Data model of the RGO app](images/data_model.png)
