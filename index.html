@@ -14,10 +14,132 @@
       .logo.typescript:hover {
         filter: drop-shadow(0 0 2em #2d79c7);
       }
+
+      .farm-list li {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+
+      .farm-list li div {
+        flex-grow: 1;
+        max-width: 100%;
+        text-align: start;
+      }
+
+      .farm-list li .toggle-drop-down,
+      .farm-list li .farm-total-status,
+      .farm-list li .last-checkin {
+        max-width: fit-content;
+      }
+
+      table, th, td {
+        border: 2px solid #2d79c7;
+      }
     </style>
   </head>
 
   <body>
+    <div class="container">
+      <h1>Richland Gro-Op Early Warning System</h1>
+      <ul class="farm-list">
+        <li class="farm-total">
+          <div class="toggle-drop-down">
+            > 
+          </div>
+          <div class="farm-name">
+            Good Farm
+          </div>
+          <div class="farm-total-status">
+            GREEN
+          </div>
+          <div class="last-checkin">
+            Monday
+          </div>
+        <li class="farm-total">
+          <div class="toggle-drop-down">
+            > 
+          </div>
+          <div class="farm-name">
+            Bad Farm Name
+          </div>
+          <div class="farm-total-status">
+            RED
+          </div>
+          <div class="last-checkin">
+            4/15/23
+          </div>
+        </li>
+        <li class="farm-total">
+          <div class="toggle-drop-down">
+            > 
+          </div>
+          <div class="farm-name">
+            Questionable Farm Name
+          </div>
+          <div class="farm-total-status">
+            YELLOW
+          </div>
+          <div class="last-checkin">
+            5/15/23
+          </div>
+        </li>
+        <li class="farm-total">
+          <div class="toggle-drop-down">
+            > 
+          </div>
+          <div class="farm-name">
+            Good Farm
+          </div>
+          <div class="farm-total-status">
+            GREEN
+          </div>
+          <div class="last-checkin">
+            Tuesday 
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="container">
+      <h1>Richland Gro-Op Early Warning System</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Farm</th>
+            <th>Status</th>
+            <th>Last Check-in</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>This is a good farm</td>
+            <td>GREEN</td>
+            <td>Monday</td>
+          </tr>
+          <tr>
+            <td>This is a bad farm</td>
+            <td>RED</td>
+            <td>4/31/23</td>
+          </tr>
+          <tr>
+            <td>This is a medium farm</td>
+            <td>YELLOW</td>
+            <td>5/15/23</td>
+          </tr>
+          <tr>
+            <td>This is a good farm</td>
+            <td>GREEN</td>
+            <td>Wednesday</td>
+          </tr>
+          <tr>
+            <td>This is a good farm</td>
+            <td>GREEN</td>
+            <td>Tuesday</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div class="container">
       <h1>Welcome to Tauri!</h1>
 
