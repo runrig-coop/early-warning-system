@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -21,4 +22,5 @@ export default defineConfig(async () => ({
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
   },
+  plugins: [vue()],
 }));
