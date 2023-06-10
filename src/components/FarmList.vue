@@ -4,6 +4,7 @@ defineProps<{ farms: Array<{ name: string, status: string, timestamp: number }> 
 
 <template>
   <ul class="farm-list">
+    <h2>Production Status by Farm</h2>
     <li v-for="(farm, i) in farms" :key="`farm-${i}`" class="farm-total">
       <div class="primary-info">
         <span class="status">
@@ -13,8 +14,11 @@ defineProps<{ farms: Array<{ name: string, status: string, timestamp: number }> 
           {{ farm.name }}
         </span>
       </div>
-      <div class="secondary-info">
-        Last Checkin: {{ new Date(farm.timestamp).toLocaleDateString() }}
+      <div v-if="farm.timestamp === 0" class="secondary-info">
+        Last report: Today
+      </div>
+      <div v-else class="secondary-info">
+        Last report: {{ farm.timestamp }} days ago
       </div>
     </li>
   </ul>

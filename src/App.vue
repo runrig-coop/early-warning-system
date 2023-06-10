@@ -6,32 +6,33 @@ const RED = '🔴';
 const YELLOW = '🟡';
 const GREEN = '🟢';
 
-const oneDay = 1000 * 60 * 60 * 24;
-const twoDays = oneDay * 2;
-const threeDays = oneDay * 3;
-
 const farms = reactive([
   {
     name: 'Joe\'s Farm',
     status: RED,
-    timestamp: Date.now() - threeDays,
+    timestamp: 10,
   },
   {
     name: 'Sally\'s Farm',
     status: YELLOW,
-    timestamp: Date.now() - twoDays,
+    timestamp: 5,
+  },
+  {
+    name: 'Joe\'s Other Farm',
+    status: YELLOW,
+    timestamp: 4,
   },
   {
     name: 'Sam\'s Farm',
     status: GREEN,
-    timestamp: Date.now() - oneDay,
+    timestamp: 0,
   },
 ]);
 </script>
 
 <template>
   <div class="container">
-    <h1>Richland Gro-Op Early Warning System</h1>
+    <h1>Richland Gro-Op: Spring Crop Plan</h1>
     <div class="list-container">
       <farm-list :farms="farms"></farm-list>
     </div>
@@ -54,6 +55,6 @@ const farms = reactive([
   justify-content: center;
 }
 .list-container ul {
-  width: 50%;
+  width: 60%;
 }
 </style>
