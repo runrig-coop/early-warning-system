@@ -30,6 +30,19 @@ const farms = reactive([
 </script>
 
 <template>
-  <h1>Richland Gro-Op Early Warning System</h1>
-  <farm-list :farms="farms"></farm-list>
+  <div class="container">
+    <h1>Richland Gro-Op Early Warning System</h1>
+    <farm-list :farms="farms"></farm-list>
+  </div>
 </template>
+
+<style scoped>
+.container {
+  margin: 0;
+  padding-top: 10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+</style>
