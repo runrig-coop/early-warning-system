@@ -14,7 +14,7 @@ const farms = reactive([
   {
     name: 'Joe\'s Farm',
     status: RED,
-    timestamp: Date.now() - oneDay,
+    timestamp: Date.now() - threeDays,
   },
   {
     name: 'Sally\'s Farm',
@@ -24,7 +24,7 @@ const farms = reactive([
   {
     name: 'Sam\'s Farm',
     status: GREEN,
-    timestamp: Date.now() - threeDays,
+    timestamp: Date.now() - oneDay,
   },
 ]);
 </script>
@@ -32,7 +32,9 @@ const farms = reactive([
 <template>
   <div class="container">
     <h1>Richland Gro-Op Early Warning System</h1>
-    <farm-list :farms="farms"></farm-list>
+    <div class="list-container">
+      <farm-list :farms="farms"></farm-list>
+    </div>
   </div>
 </template>
 
@@ -44,5 +46,14 @@ const farms = reactive([
   flex-direction: column;
   justify-content: center;
   text-align: center;
+}
+
+.list-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.list-container ul {
+  width: 50%;
 }
 </style>
