@@ -1,7 +1,5 @@
-# Early Warning System - Richland Gro-Op
-An early warning system for Richland Gro-Op to coordinate field health.
-
-This gives a dashboard and quick visual reference for coordinating farms and fields within the Richland Gro-Op group.
+# Early Warning System
+An auditing dashboard that reports when and where (in terms of relative urgency) an on-site farm visit or other action may be required. Through a combination of automated, manual and verbal survey submissions, the status of each farm can be updated with regular crop assessments and reports on general field health.
 
 ## Development Quick Start
 First, make sure you have [Rust], [Node.js], and the full suite of [Tauri prerequisites] installed on your local development machine.
