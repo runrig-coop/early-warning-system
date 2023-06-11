@@ -14,7 +14,7 @@ npm run tauri dev   # Start the Tauri development environment
 npm run dev
 ```
 
-## Project Background
+## Project Background & Status
 The Early Warning System (EWS) is part of a Runrig pilot project, which emerged from the [Skywoman MAIA interviews] with the [Richland Gro-Op] and [OSU Microfarm Project] from the fall of 2022. The EWS is one possible solution we identified to aid in the process of auditing crop production and ensure it is on track with the crop plan shared by all farms in the coop. To achieve profitability while aggregating yields from relatively small production lots, RGO takes orders in advance of planting and allows very little margin for error. Verifying each farm's status is therefore critical, but potentially quite time consuming. While on-site visits will always be necessary, the primary aim of this system is to provide the coop manager with reliable insights into where she can best focus her attention. View the rest of the [preliminary design doc] for further details, requirements and general context.
 
 With this and future Runrig projects, we intend to provide the end users with carefully designed tools that can help bridge existing software platforms to meet their specific needs, while helping to improve the overall ecosystem of open technology. At the same time, we strive to make each Runrig apparatus more than just a proof-of-concept or a prototype, but a targeted intervention that delivers immediate gains for farmers and other food workers working in the field today.
@@ -24,6 +24,16 @@ For the Early Warning System, we're looking towards potential integrations with 
 In the process, we also seek to promote an open culture of design and knowledge production among practitioners from all levels and realms of expertise. Indeed, the process and relationships that come together in the production of these tools should be prioritized over the tools themselves, part of what we mean by ["ecology over architecture"].
 
 To get involved or learn more about the Runrig community, you can [read the plan], sign up for our [newsletter] or checkout the schedule of Runrig [Open Design Workshops].
+
+### Current Status
+We are tracking progress on issues using GitHub milestones:
+
+- [x] [Screenshots for Main Dashboard](https://github.com/runrig-coop/rgo-early-warning-system/milestone/1)
+- [ ] [Functional prototype](https://github.com/runrig-coop/rgo-early-warning-system/milestone/2)
+
+The main screenshot for the first milestone is just meant to gesture towards the kinds of visual hierarchy of the Early Warning System, and a starting point for the second milestone:
+
+![A list of farms for the Richland Gro-Op Spring Crop Plan, showing for each farm a color-coded red, yellow or green status icon and the date of their last status report, all sorted by relative urgency.](images/first-mockup-screenshot.png)
 
 ## Data Model
 The data model consists of three tables representing physical items (farm, land, and planting) and three tables representing events or logs recorded by members (measurement, quantitative_measurement, and qualitative_measurement).
