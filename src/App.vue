@@ -1,33 +1,41 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import FarmList from './components/FarmList.vue';
 
 const RED = '🔴';
 const YELLOW = '🟡';
 const GREEN = '🟢';
 
-const farms = reactive([
-  {
+interface FarmObject {
+  name: string,
+  status: string,
+  timestamp: number,
+}
+const farms: FarmObject[] = reactive([]);
+
+onMounted(() => {
+  farms.push({
     name: 'Joe\'s Farm',
     status: RED,
     timestamp: 10,
-  },
-  {
+  });
+  farms.push({
     name: 'Sally\'s Farm',
     status: YELLOW,
     timestamp: 5,
-  },
-  {
+  });
+  farms.push({
     name: 'Joe\'s Other Farm',
     status: YELLOW,
     timestamp: 4,
-  },
-  {
+  });
+  farms.push({
     name: 'Sam\'s Farm',
     status: GREEN,
     timestamp: 0,
-  },
-]);
+  });
+})
+
 </script>
 
 <template>
