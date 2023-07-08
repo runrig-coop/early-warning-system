@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import { invoke } from '@tauri-apps/api/tauri';
 import { onMounted, reactive } from 'vue';
 import FarmList from './components/FarmList.vue';
 
 const RED = '🔴';
 const YELLOW = '🟡';
 const GREEN = '🟢';
+
+const colorMapping = {
+  Red: RED,
+  Yellow: YELLOW,
+  Green: GREEN,
+};
 
 interface FarmObject {
   name: string,
@@ -14,26 +21,12 @@ interface FarmObject {
 const farms: FarmObject[] = reactive([]);
 
 onMounted(() => {
-  farms.push({
-    name: 'Joe\'s Farm',
-    status: RED,
-    timestamp: 10,
-  });
-  farms.push({
-    name: 'Sally\'s Farm',
-    status: YELLOW,
-    timestamp: 5,
-  });
-  farms.push({
-    name: 'Joe\'s Other Farm',
-    status: YELLOW,
-    timestamp: 4,
-  });
-  farms.push({
-    name: 'Sam\'s Farm',
-    status: GREEN,
-    timestamp: 0,
-  });
+  invoke('farms').then((fs: any): void => fs.map((f: FarmObject) => {
+    const status = f.status in colorMapping ? colorMapping[f.status] : RED;
+    return { ...f, status };
+  }).forEach((f: FarmObject) => {
+    farms.push(f);
+  }));
 })
 
 </script>
