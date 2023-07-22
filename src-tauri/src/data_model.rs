@@ -1,7 +1,7 @@
 use chrono::NaiveDate;
-use serde;
+use serde::{Serialize, Deserialize};
 
-#[derive(serde::Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Farm {
     pub id: usize,
     pub name: String,
@@ -52,7 +52,7 @@ pub struct Qualitative {
     pub date: NaiveDate,
 }
 
-#[derive(serde::Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub enum Status {
     Red,
     Yellow,
