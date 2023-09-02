@@ -2,6 +2,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use chrono::NaiveDate;
 use serde::{Serialize, Deserialize};
+use std::fs::File;
+use std::io::prelude::*;
 use rgo_early_warning_system::data_model::{Farm, Status};
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -34,13 +36,16 @@ fn path() -> std::path::PathBuf {
 }
 
 #[tauri::command]
-fn save(data: SavedState) {
+fn save(farms: Vec<Farm>) {
+    let save_state = SavedState {farms};
     let f = std::fs::OpenOptions::new()
         .write(true)
         .create(true)
         .open(path())
         .expect("Couldn't open file");
-    serde_json::to_writer_pretty(f, &data).unwrap();
+    let output_text = serde_json::to_string_pretty(&save_state).unwrap();
+    let mut file = File::create(path()).expect("Can't create save file");
+    file.write_all(output_text.as_bytes()).expect("Failed to write data to file");
 }
 
 #[tauri::command]
@@ -48,16 +53,14 @@ fn load() -> Vec<Farm> {
     let try_file = std::fs::File::open(path());
     let save_state:SavedState = match try_file{
         Ok(file) => serde_json::from_reader(file).expect("Could not read values."),
-        Err(e)   => SavedState::default(),
+        Err(_)   => SavedState::default(),
     };
     save_state.farms
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
-        .invoke_handler(tauri::generate_handler![save])
-        .invoke_handler(tauri::generate_handler![load])
+        .invoke_handler(tauri::generate_handler![save, load])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

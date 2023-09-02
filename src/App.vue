@@ -12,6 +12,11 @@ const colorMapping = {
   Yellow: YELLOW,
   Green: GREEN,
 };
+const reverseColorMapping = {
+  [RED]: 'Red',
+  [YELLOW]: 'Yellow',
+  [GREEN]: 'Green',
+};
 
 interface FarmObject {
   id: number,
@@ -36,6 +41,13 @@ const defaultFarms: FarmObject[] = [
   },
 ];
 
+function save() {
+  const betterFarms = farms.map(f => ({
+    ...f, status: reverseColorMapping[f.status],
+  }))
+  invoke('save', { farms: betterFarms });
+}
+ 
 onMounted(() => {
   invoke('load').then((loadedFarms: any): void => {
     const result = loadedFarms.length > 0 ? loadedFarms : defaultFarms;
@@ -54,6 +66,9 @@ onMounted(() => {
 <template>
   <div class="container">
     <h1>Richland Gro-Op: Spring Crop Plan</h1>
+    <div>
+      <button @click="save">Save</button>
+    </div>
     <div class="list-container">
       <farm-list :farms="farms"></farm-list>
     </div>
