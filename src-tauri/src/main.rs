@@ -34,7 +34,7 @@ fn path() -> std::path::PathBuf {
 }
 
 #[tauri::command]
-fn save_sync(data: SavedState) {
+fn save(data: SavedState) {
     let f = std::fs::OpenOptions::new()
         .write(true)
         .create(true)
@@ -44,7 +44,7 @@ fn save_sync(data: SavedState) {
 }
 
 #[tauri::command]
-fn load_sync() -> Vec<Farm> {
+fn load() -> Vec<Farm> {
     let try_file = std::fs::File::open(path());
     let save_state:SavedState = match try_file{
         Ok(file) => serde_json::from_reader(file).expect("Could not read values."),
@@ -56,8 +56,8 @@ fn load_sync() -> Vec<Farm> {
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![greet])
-        .invoke_handler(tauri::generate_handler![save_sync])
-        .invoke_handler(tauri::generate_handler![load_sync])
+        .invoke_handler(tauri::generate_handler![save])
+        .invoke_handler(tauri::generate_handler![load])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

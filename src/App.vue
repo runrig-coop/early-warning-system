@@ -37,7 +37,7 @@ const defaultFarms: FarmObject[] = [
 ];
 
 onMounted(() => {
-  invoke('load_sync').then((loadedFarms: any): void => {
+  invoke('load').then((loadedFarms: any): void => {
     const result = loadedFarms.length > 0 ? loadedFarms : defaultFarms;
     return result.map((f: FarmObject) => {
       const status = f.status in colorMapping ? colorMapping[f.status] : RED;
