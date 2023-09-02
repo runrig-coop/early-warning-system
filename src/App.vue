@@ -23,16 +23,16 @@ const farms: FarmObject[] = reactive([]);
 
 const defaultFarms: FarmObject[] = [
   {
-    "id": 0,
-    "name": "Joe's Farm",
-    "status": "Red",
-    "timestamp": 20
+    id: 0,
+    name: 'Joe\'s Farm',
+    status: 'Red',
+    timestamp: 20
   },
   {
-    "id": 1,
-    "name": "Sally's Farm",
-    "status": "Yellow",
-    "timestamp": 5
+    id: 1,
+    name: 'Sally\'s Farm',
+    status: 'Yellow',
+    timestamp: 5
   },
 ];
 
