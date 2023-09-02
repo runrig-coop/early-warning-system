@@ -14,19 +14,39 @@ const colorMapping = {
 };
 
 interface FarmObject {
+  id: number,
   name: string,
   status: string,
   timestamp: number,
 }
 const farms: FarmObject[] = reactive([]);
 
+const defaultFarms: FarmObject[] = [
+  {
+    "id": 0,
+    "name": "Joe's Farm",
+    "status": "Red",
+    "timestamp": 20
+  },
+  {
+    "id": 1,
+    "name": "Sally's Farm",
+    "status": "Yellow",
+    "timestamp": 5
+  },
+];
+
 onMounted(() => {
-  invoke('farms').then((fs: any): void => fs.map((f: FarmObject) => {
-    const status = f.status in colorMapping ? colorMapping[f.status] : RED;
-    return { ...f, status };
-  }).forEach((f: FarmObject) => {
-    farms.push(f);
-  }));
+  invoke('load_sync').then((loadedFarms: any): void => {
+    const result = loadedFarms.length > 0 ? loadedFarms : defaultFarms;
+    return result.map((f: FarmObject) => {
+      const status = f.status in colorMapping ? colorMapping[f.status] : RED;
+      return { ...f, status };
+    }).forEach((f: FarmObject) => {
+      console.log(f);
+      farms.push(f);
+    });
+  });
 })
 
 </script>
