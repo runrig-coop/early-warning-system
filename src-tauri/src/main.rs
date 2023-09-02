@@ -9,40 +9,6 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
-#[tauri::command]
-fn farms() -> Vec<Farm> {
-    let mut farms = Vec::new();
-    farms.push(Farm {
-        id: 0,
-        name: "Joe's Farm".to_string(),
-        // measurements: Vec::new(),
-        timestamp: 20,
-        status: Status::Red,
-    });
-    farms.push(Farm {
-        id: 1,
-        name: "Sally's Farm".to_string(),
-        // measurements: Vec::new(),
-        timestamp: 5,
-        status: Status::Yellow,
-    });
-    farms.push(Farm {
-        id: 2,
-        name: "Joe's Other Farm".to_string(),
-        // measurements: Vec::new(),
-        timestamp: 10,
-        status: Status::Yellow,
-    });
-    farms.push(Farm {
-        id: 3,
-        name: "Sam's Farm".to_string(),
-        // measurements: Vec::new(),
-        timestamp: 1,
-        status: Status::Green,
-    });
-    farms
-}
-
 #[derive(Debug, Clone)]
 enum LoadError {
     File,
@@ -56,7 +22,7 @@ enum SaveError {
     Format,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Default)]
 struct SavedState {
     farms: Vec<Farm>
 }
@@ -77,11 +43,21 @@ fn save_sync(data: SavedState) {
     serde_json::to_writer_pretty(f, &data).unwrap();
 }
 
+#[tauri::command]
+fn load_sync() -> Vec<Farm> {
+    let try_file = std::fs::File::open(path());
+    let save_state:SavedState = match try_file{
+        Ok(file) => serde_json::from_reader(file).expect("Could not read values."),
+        Err(e)   => SavedState::default(),
+    };
+    save_state.farms
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![greet])
-        .invoke_handler(tauri::generate_handler![farms])
         .invoke_handler(tauri::generate_handler![save_sync])
+        .invoke_handler(tauri::generate_handler![load_sync])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
