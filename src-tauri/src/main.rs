@@ -31,6 +31,8 @@ struct SavedState {
 
 fn path() -> std::path::PathBuf {
     let mut path = std::env::current_dir().unwrap_or_default();
+    path.push("..");
+    path.push(".cache");
     path.push("rgo_early_warning.json");
     path
 }

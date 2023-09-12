@@ -1,0 +1,22 @@
+{
+  "farms": [
+    {
+      "id": 0,
+      "name": "Joe's Farm",
+      "status": "Red",
+      "timestamp": 20
+    },
+    {
+      "id": 1,
+      "name": "Sally's Farm",
+      "status": "Yellow",
+      "timestamp": 5
+    },
+    {
+      "id": 2,
+      "name": "Sam's Farm",
+      "status": "Green",
+      "timestamp": 5
+    }
+  ]
+}
