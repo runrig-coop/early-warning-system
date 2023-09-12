@@ -55,7 +55,6 @@ onMounted(() => {
       const status = f.status in colorMapping ? colorMapping[f.status] : RED;
       return { ...f, status };
     }).forEach((f: FarmObject) => {
-      console.log(f);
       farms.push(f);
     });
   });
