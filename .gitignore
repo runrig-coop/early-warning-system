@@ -15,3 +15,6 @@ target/
 
 # JavaScript/Node package dependencies
 node_modules/
+
+# Cache for testing files etc.
+.cache/
