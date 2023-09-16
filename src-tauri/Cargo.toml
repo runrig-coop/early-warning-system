@@ -1,5 +1,5 @@
 [package]
-name = "rgo-early-warning-system"
+name = "early-warning-system"
 version = "0.0.0"
 description = "A Tauri App"
 authors = ["you"]

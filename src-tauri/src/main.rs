@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 use serde::{Serialize, Deserialize};
 use std::fs::File;
 use std::io::prelude::*;
-use rgo_early_warning_system::data_model::{Farm, Status};
+use early_warning_system::data_model::{Farm, Status};
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -33,7 +33,7 @@ fn path() -> std::path::PathBuf {
     let mut path = std::env::current_dir().unwrap_or_default();
     path.push("..");
     path.push(".cache");
-    path.push("rgo_early_warning.json");
+    path.push("early_warning.json");
     path
 }
 

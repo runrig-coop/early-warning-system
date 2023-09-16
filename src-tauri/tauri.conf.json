@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "rgo-early-warning-system",
+    "productName": "early-warning-system",
     "version": "0.0.0"
   },
   "tauri": {
@@ -40,7 +40,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "rgo-early-warning-system",
+        "title": "early-warning-system",
         "width": 800,
         "height": 600
       }

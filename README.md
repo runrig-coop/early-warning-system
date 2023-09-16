@@ -28,8 +28,8 @@ To get involved or learn more about the Runrig community, you can [read the plan
 ### Current Status
 We are tracking progress on issues using GitHub milestones:
 
-- [x] [Screenshots for Main Dashboard](https://github.com/runrig-coop/rgo-early-warning-system/milestone/1)
-- [ ] [Functional prototype](https://github.com/runrig-coop/rgo-early-warning-system/milestone/2)
+- [x] [Screenshots for Main Dashboard](https://github.com/runrig-coop/early-warning-system/milestone/1)
+- [ ] [Functional prototype](https://github.com/runrig-coop/early-warning-system/milestone/2)
 
 The main screenshot for the first milestone is just meant to gesture towards the kinds of visual hierarchy of the Early Warning System, and a starting point for the second milestone:
 
