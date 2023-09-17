@@ -5,7 +5,6 @@ use serde::{Serialize, Deserialize};
 pub struct Farm {
     pub id: usize,
     pub name: String,
-    // pub measurements: Vec<Measurement>,
     pub status: Status,
     pub timestamp: usize,
 }
