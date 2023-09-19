@@ -12,6 +12,7 @@
     "tauri:dev": "tauri dev"
   },
   "dependencies": {
+    "@picocss/pico": "^1.5.10",
     "@tauri-apps/api": "^1.3.0",
     "vue": "^3.2.47"
   },
