@@ -13,6 +13,9 @@
 /* 
  * PICO OVERRIDES
  * The following is adapted from https://picocss.com/docs/customization.html.
+ * So far this is only handling the main brand colors, but in Pico v2 this
+ * should all become a lot easier to do, so might hold off till then. See
+ * https://v2.picocss.com/docs/css-variables.
  */
 
 /* Light-green Light scheme (Default) */
