@@ -1,14 +1,7 @@
 <script setup lang="ts">
-defineProps<{farms: Array<{
-  id: number,
-  name: string,
-  status: {
-    emoji: string,
-    symbol: symbol,
-    title: string,
-  },
-  timestamp: number,
-}>}>()
+import { FarmListItem } from '../farms';
+
+defineProps<{ farms: FarmListItem[] }>()
 </script>
 
 <template>

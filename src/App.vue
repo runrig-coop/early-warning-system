@@ -1,64 +1,9 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/tauri';
 import { onMounted, reactive } from 'vue';
+import { toBackendFarmObject, BackendFarmObject, FarmListItem } from './farms';
+import { RED, YELLOW, toStatusObject } from './status';
 import FarmList from './components/FarmList.vue';
-
-const RED = Symbol('RED');
-const YELLOW = Symbol('YELLOW');
-const GREEN = Symbol('GREEN');
-const DEFAULT_STATUS_SYMBOL = RED;
-
-interface ColorMap {
-  [color: symbol]: { title: string, emoji: string }
-}
-const colorMap: ColorMap = {
-  [RED]: {
-    emoji: '🔴',
-    title: 'Red',
-  },
-  [YELLOW]: {
-    emoji: '🟡',
-    title: 'Yellow',
-  },
-  [GREEN]: {
-    emoji: '🟢',
-    title: 'Green',
-  },
-};
-interface StatusObject {
-  symbol: symbol,
-  emoji: string,
-  title: string,
-}
-const fromSymbol = (symbol: symbol): StatusObject => {
-  if (symbol in colorMap) return {
-    emoji: colorMap[symbol].emoji,
-    symbol,
-    title: colorMap[symbol].title,
-  };
-  return fromSymbol(DEFAULT_STATUS_SYMBOL);
-};
-const defaultStatus: StatusObject = fromSymbol(DEFAULT_STATUS_SYMBOL);
-const colors: StatusObject[] = Object.getOwnPropertySymbols(colorMap).map(fromSymbol);
-const fromAttr = (attr?: string): StatusObject =>
-  colors.find(c => attr === c.title || attr === c.emoji) || defaultStatus;
-const toStatusObject = (status?: symbol|string): StatusObject =>
-  typeof status === 'symbol' ? fromSymbol(status) : fromAttr(status);
-
-interface BackendFarmObject {
-  id: number,
-  name: string,
-  status: string,
-  timestamp: number,
-}
-interface FarmListItem {
-  id: number,
-  name: string,
-  status: StatusObject,
-  timestamp: number,
-}
-const toBackendFarmObject = (f: FarmListItem): BackendFarmObject =>
-  ({ ...f, status: f.status.title });
 
 const farms: FarmListItem[] = reactive([]);
 const defaultFarms: FarmListItem[] = [
