@@ -1,5 +1,14 @@
 <script setup lang="ts">
-defineProps<{ farms: Array<{ name: string, status: string, timestamp: number }> }>()
+defineProps<{farms: Array<{
+  id: number,
+  name: string,
+  status: {
+    emoji: string,
+    symbol: symbol,
+    title: string,
+  },
+  timestamp: number,
+}>}>()
 </script>
 
 <template>
@@ -8,7 +17,7 @@ defineProps<{ farms: Array<{ name: string, status: string, timestamp: number }> 
     <li v-for="(farm, i) in farms" :key="`farm-${i}`" class="farm-total">
       <div class="primary-info">
         <span class="status">
-          {{ farm.status }}
+          {{ farm.status.emoji }}
         </span>
         <span class="name">
           {{ farm.name }}

@@ -3,60 +3,91 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { onMounted, reactive } from 'vue';
 import FarmList from './components/FarmList.vue';
 
-const RED = '🔴';
-const YELLOW = '🟡';
-const GREEN = '🟢';
+const RED = Symbol('RED');
+const YELLOW = Symbol('YELLOW');
+const GREEN = Symbol('GREEN');
+const DEFAULT_STATUS_SYMBOL = RED;
 
-const colorMapping = {
-  Red: RED,
-  Yellow: YELLOW,
-  Green: GREEN,
+interface ColorMap {
+  [color: symbol]: { title: string, emoji: string }
+}
+const colorMap: ColorMap = {
+  [RED]: {
+    emoji: '🔴',
+    title: 'Red',
+  },
+  [YELLOW]: {
+    emoji: '🟡',
+    title: 'Yellow',
+  },
+  [GREEN]: {
+    emoji: '🟢',
+    title: 'Green',
+  },
 };
-const reverseColorMapping = {
-  [RED]: 'Red',
-  [YELLOW]: 'Yellow',
-  [GREEN]: 'Green',
+interface StatusObject {
+  symbol: symbol,
+  emoji: string,
+  title: string,
+}
+const fromSymbol = (symbol: symbol): StatusObject => {
+  if (symbol in colorMap) return {
+    emoji: colorMap[symbol].emoji,
+    symbol,
+    title: colorMap[symbol].title,
+  };
+  return fromSymbol(DEFAULT_STATUS_SYMBOL);
 };
+const defaultStatus: StatusObject = fromSymbol(DEFAULT_STATUS_SYMBOL);
+const colors: StatusObject[] = Object.getOwnPropertySymbols(colorMap).map(fromSymbol);
+const fromAttr = (attr?: string): StatusObject =>
+  colors.find(c => attr === c.title || attr === c.emoji) || defaultStatus;
+const toStatusObject = (status?: symbol|string): StatusObject =>
+  typeof status === 'symbol' ? fromSymbol(status) : fromAttr(status);
 
-interface FarmObject {
+interface BackendFarmObject {
   id: number,
   name: string,
   status: string,
   timestamp: number,
 }
-const farms: FarmObject[] = reactive([]);
+interface FarmListItem {
+  id: number,
+  name: string,
+  status: StatusObject,
+  timestamp: number,
+}
+const toBackendFarmObject = (f: FarmListItem): BackendFarmObject =>
+  ({ ...f, status: f.status.title });
 
-const defaultFarms: FarmObject[] = [
+const farms: FarmListItem[] = reactive([]);
+const defaultFarms: FarmListItem[] = [
   {
     id: 0,
     name: 'Joe\'s Farm',
-    status: 'Red',
+    status: toStatusObject(RED),
     timestamp: 20
   },
   {
     id: 1,
     name: 'Sally\'s Farm',
-    status: 'Yellow',
+    status: toStatusObject(YELLOW),
     timestamp: 5
   },
 ];
 
 function save() {
-  const betterFarms = farms.map(f => ({
-    ...f, status: reverseColorMapping[f.status],
-  }))
-  invoke('save', { farms: betterFarms });
+  const cache: BackendFarmObject[] = farms.map(toBackendFarmObject);
+  invoke('save', { farms: cache });
 }
- 
+
 onMounted(() => {
-  invoke('load').then((loadedFarms: any): void => {
-    const result = loadedFarms.length > 0 ? loadedFarms : defaultFarms;
-    return result.map((f: FarmObject) => {
-      const status = f.status in colorMapping ? colorMapping[f.status] : RED;
-      return { ...f, status };
-    }).forEach((f: FarmObject) => {
-      farms.push(f);
-    });
+  invoke('load').then((cache: BackendFarmObject[]): void => {
+    const list: FarmListItem[] = cache.map((f) => ({
+      ...f, status: toStatusObject(f.status),
+    }));
+    if (list.length > 0) farms.push(...list);
+    else farms.push(...defaultFarms);
   });
 })
 
