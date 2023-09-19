@@ -1,0 +1,54 @@
+/* 
+ * BRAND COLORS
+ * Based on the default VitePress theme currently used on runrig.org.
+ */
+:root {
+  --brand: #10b981;
+  --brand-light: #34d399;
+  --brand-lighter: #6ee7b7;
+  --brand-dark: #059669;
+  --brand-darker: #047857;
+}
+
+/* 
+ * PICO OVERRIDES
+ * The following is adapted from https://picocss.com/docs/customization.html.
+ */
+
+/* Light-green Light scheme (Default) */
+/* Can be forced with data-theme="light" */
+[data-theme="light"],
+:root:not([data-theme="dark"]) {
+  --primary: var(--brand);
+  --primary-hover: var(--brand-dark);
+  --primary-focus: rgba(124, 179, 66, 0.125);
+  --primary-inverse: #FFF;
+}
+
+/* Light-green Dark scheme (Auto) */
+/* Automatically enabled if user has Dark mode enabled */
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --primary: var(--brand);
+    --primary-hover: var(--brand-light);
+    --primary-focus: rgba(124, 179, 66, 0.25);
+    --primary-inverse: #FFF;
+  }
+}
+
+/* Light-green Dark scheme (Forced) */
+/* Enabled if forced with data-theme="dark" */
+[data-theme="dark"] {
+  --primary: var(--brand);
+  --primary-hover: var(--brand-light);
+  --primary-focus: rgba(124, 179, 66, 0.25);
+  --primary-inverse: #FFF;
+}
+
+/* Light-green (Common styles) */
+:root {
+  --form-element-active-border-color: var(--primary);
+  --form-element-focus-color: var(--primary-focus);
+  --switch-color: var(--primary-inverse);
+  --switch-checked-background-color: var(--primary);
+}
