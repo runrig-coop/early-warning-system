@@ -56,6 +56,14 @@ const examples: FarmListItem[] = [
         class="outline secondary">
         Examples
       </span>
+      &nbsp;
+      <span
+        role="button"
+        v-if="farms.length > 0"
+        @click="farms.splice(0)"
+        class="outline secondary">
+        Clear
+      </span>
     </hgroup>
   </header>
   <main class="container">
