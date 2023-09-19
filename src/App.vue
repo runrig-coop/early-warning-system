@@ -39,24 +39,22 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container">
-    <h1>Richland Gro-Op: Spring Crop Plan</h1>
-    <div>
-      <button @click="save">Save</button>
-    </div>
+  <header>
+    <hgroup>
+      <h1>Richland Gro-Op: Spring Crop Plan</h1>
+      <span role="button" @click="save" class="outline">Save</span>
+    </hgroup>
+  </header>
+  <main class="container">
     <div class="list-container">
       <farm-list :farms="farms"></farm-list>
     </div>
-  </div>
+  </main>
 </template>
 
 <style scoped>
-.container {
-  margin: 0;
+header {
   padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   text-align: center;
 }
 
