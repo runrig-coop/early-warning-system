@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "npm run dev",
+    "start": "npm run tauri:dev",
     "tauri": "tauri",
     "tauri:dev": "tauri dev"
   },
