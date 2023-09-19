@@ -57,13 +57,4 @@ header {
   padding-top: 10vh;
   text-align: center;
 }
-
-.list-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-.list-container ul {
-  width: 60%;
-}
 </style>

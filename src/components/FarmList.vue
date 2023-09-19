@@ -5,49 +5,32 @@ defineProps<{ farms: FarmListItem[] }>()
 </script>
 
 <template>
-  <ul class="farm-list">
-    <h2>Production Status by Farm</h2>
-    <li v-for="(farm, i) in farms" :key="`farm-${i}`" class="farm-total">
-      <div class="primary-info">
-        <span class="status">
-          {{ farm.status.emoji }}
-        </span>
-        <span class="name">
-          {{ farm.name }}
-        </span>
-      </div>
-      <div v-if="farm.timestamp === 0" class="secondary-info">
-        Last report: Today
-      </div>
-      <div v-else class="secondary-info">
-        Last report: {{ farm.timestamp }} days ago
-      </div>
-    </li>
-  </ul>
+  <section>
+    <table role="grid">
+      <thead>
+        <tr>
+          <th colspan="3">Production Status by Farm</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(farm, i) in farms" :key="`farm-${i}`">
+          <td class="status">{{ farm.status.emoji }}</td>
+          <td class="name">{{ farm.name }}</td>
+          <td class="secondary-info">
+            Last report: {{
+              farm.timestamp === 0 ? 'Today' : `${farm.timestamp} days ago`
+            }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </template>
 
 <style scoped>
-ul.farm-list {
-  display: flex;
-  flex-direction: column;
-}
-.farm-list li {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  padding: 1.5rem;
-}
-
-.farm-list li .primary-info {
-  flex-grow: 1;
-  max-width: 100%;
-  text-align: start;
-}
-
-.farm-list li .toggle-drop-down,
-.farm-list li .farm-total-status,
-.farm-list li .secondary-info {
-  max-width: fit-content;
+th[colspan="3"] {
+  text-align: center;
+  font-size: 1.75rem;
 }
 
 .secondary-info {
@@ -56,11 +39,9 @@ ul.farm-list {
 
 .status {
   font-size: 2rem;
-  padding-right: 1.5rem;
 }
 
 .name {
   font-size: 1.5rem;
-  padding-right: 1.5rem;
 }
 </style>
