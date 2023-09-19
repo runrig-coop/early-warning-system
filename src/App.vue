@@ -2,11 +2,26 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { onMounted, reactive } from 'vue';
 import { toBackendFarmObject, BackendFarmObject, FarmListItem } from './farms';
-import { RED, YELLOW, toStatusObject } from './status';
+import { GREEN, RED, YELLOW, toStatusObject } from './status';
 import FarmList from './components/FarmList.vue';
 
 const farms: FarmListItem[] = reactive([]);
-const defaultFarms: FarmListItem[] = [
+
+function save() {
+  const cache: BackendFarmObject[] = farms.map(toBackendFarmObject);
+  invoke('save', { farms: cache });
+}
+
+onMounted(() => {
+  invoke('load').then((cache: BackendFarmObject[]): void => {
+    const list: FarmListItem[] = cache.map((f) => ({
+      ...f, status: toStatusObject(f.status),
+    }));
+    farms.push(...list);
+  });
+})
+
+const examples: FarmListItem[] = [
   {
     id: 0,
     name: 'Joe\'s Farm',
@@ -19,22 +34,13 @@ const defaultFarms: FarmListItem[] = [
     status: toStatusObject(YELLOW),
     timestamp: 5
   },
+  {
+    id: 2,
+    name: 'Sam\'s Farm',
+    status: toStatusObject(GREEN),
+    timestamp: 0
+  },
 ];
-
-function save() {
-  const cache: BackendFarmObject[] = farms.map(toBackendFarmObject);
-  invoke('save', { farms: cache });
-}
-
-onMounted(() => {
-  invoke('load').then((cache: BackendFarmObject[]): void => {
-    const list: FarmListItem[] = cache.map((f) => ({
-      ...f, status: toStatusObject(f.status),
-    }));
-    if (list.length > 0) farms.push(...list);
-    else farms.push(...defaultFarms);
-  });
-})
 
 </script>
 
@@ -43,6 +49,13 @@ onMounted(() => {
     <hgroup>
       <h1>Richland Gro-Op: Spring Crop Plan</h1>
       <span role="button" @click="save" class="outline">Save</span>
+      &nbsp;
+      <span role="button"
+        v-if="farms.length === 0"
+        @click="farms.push(...examples)"
+        class="outline secondary">
+        Examples
+      </span>
     </hgroup>
   </header>
   <main class="container">
