@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { inject } from 'vue';
 import { FarmListItem } from '../farms';
 
-defineProps<{ farms: FarmListItem[] }>()
+defineProps<{ farms: FarmListItem[] }>();
+
+const toggleStatus: Function = inject('toggleStatus');
 </script>
 
 <template>
@@ -14,7 +17,11 @@ defineProps<{ farms: FarmListItem[] }>()
       </thead>
       <tbody>
         <tr v-for="(farm, i) in farms" :key="`farm-${i}`">
-          <td class="status">{{ farm.status.emoji }}</td>
+          <td class="status">
+            <span @click="toggleStatus(i, farm.status.symbol)">
+              {{ farm.status.emoji }}
+            </span>
+          </td>
           <td class="name">{{ farm.name }}</td>
           <td class="secondary-info">
             Last report: {{

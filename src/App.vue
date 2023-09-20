@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/tauri';
-import { onMounted, reactive } from 'vue';
+import { onMounted, provide, reactive } from 'vue';
 import { toBackendFarmObject, BackendFarmObject, FarmListItem } from './farms';
 import { GREEN, RED, YELLOW, toStatusObject } from './status';
 import FarmList from './components/FarmList.vue';
@@ -11,6 +11,13 @@ function save() {
   const cache: BackendFarmObject[] = farms.map(toBackendFarmObject);
   invoke('save', { farms: cache });
 }
+
+function toggleStatus(i, sym) {
+  if (sym === RED) farms[i].status = toStatusObject(YELLOW);
+  if (sym === YELLOW) farms[i].status = toStatusObject(GREEN);
+  if (sym === GREEN) farms[i].status = toStatusObject(RED);
+}
+provide('toggleStatus', toggleStatus);
 
 onMounted(() => {
   invoke('load').then((cache: BackendFarmObject[]): void => {
