@@ -52,28 +52,28 @@ const examples: FarmListItem[] = [
 </script>
 
 <template>
-  <header>
-    <hgroup>
-      <h1>Richland Gro-Op: Spring Crop Plan</h1>
-      <span role="button" @click="save" class="outline">Save</span>
-      &nbsp;
-      <span role="button"
-        v-if="farms.length === 0"
-        @click="farms.push(...examples)"
-        class="outline secondary">
-        Examples
-      </span>
-      &nbsp;
-      <span
-        role="button"
-        v-if="farms.length > 0"
-        @click="farms.splice(0)"
-        class="outline secondary">
-        Clear
-      </span>
-    </hgroup>
-  </header>
   <main class="container">
+    <header>
+      <hgroup>
+        <h1>Richland Gro-Op: Spring Crop Plan</h1>
+        <span role="button" @click="save" class="outline">Save</span>
+        &nbsp;
+        <span role="button"
+          v-if="farms.length === 0"
+          @click="farms.push(...examples)"
+          class="outline secondary">
+          Examples
+        </span>
+        &nbsp;
+        <span
+          role="button"
+          v-if="farms.length > 0"
+          @click="farms.splice(0)"
+          class="outline secondary">
+          Clear
+        </span>
+      </hgroup>
+    </header>
     <div class="list-container">
       <farm-list :farms="farms"></farm-list>
     </div>
@@ -81,7 +81,7 @@ const examples: FarmListItem[] = [
 </template>
 
 <style scoped>
-header {
+main header {
   padding-top: 10vh;
   text-align: center;
 }
