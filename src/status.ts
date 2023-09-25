@@ -26,6 +26,8 @@ export const colorMap: ColorMap = {
     title: 'Green',
   },
 };
+export const colorList = Object.getOwnPropertySymbols(colorMap)
+  .map(symbol => ({ ...colorMap[symbol], symbol }));
 
 const fromSymbol = (symbol: symbol): StatusObject => {
   if (symbol in colorMap) return {
