@@ -12,7 +12,7 @@ export interface StatusObject {
 interface ColorMap {
   [color: symbol]: { title: string, emoji: string }
 }
-const colorMap: ColorMap = {
+export const colorMap: ColorMap = {
   [RED]: {
     emoji: '🔴',
     title: 'Red',
