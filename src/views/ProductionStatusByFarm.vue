@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { ref, Teleport } from 'vue';
-import useFarms from '../farms';
+import useFarms, { examples } from '../farms';
 import { colorList } from '../status';
 import Modal from '../components/Modal.vue';
 import RadioInput from '../components/RadioInput.vue';
 
 const {
-  examples, farms, save, setFarmStatus,
+  farms, save, setFarmStatus,
 } = useFarms();
 
 const selectedFarmIndex = ref(-1);
 function editFarm(i) {
   selectedFarmIndex.value = i;
 }
-
 </script>
 
 <template>

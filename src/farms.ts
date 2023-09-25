@@ -37,30 +37,28 @@ export default function useFarms() {
   function setFarmStatus(i: number, color: string|symbol): void {
     farms[i].status = toStatusObject(color);
   }
-
-
-  const examples: FarmListItem[] = [
-    {
-      id: 0,
-      name: 'Joe\'s Farm',
-      status: toStatusObject(RED),
-      timestamp: 20
-    },
-    {
-      id: 1,
-      name: 'Sally\'s Farm',
-      status: toStatusObject(YELLOW),
-      timestamp: 5
-    },
-    {
-      id: 2,
-      name: 'Sam\'s Farm',
-      status: toStatusObject(GREEN),
-      timestamp: 0
-    },
-  ];
-
   return {
-    examples, farms, save, setFarmStatus,
+    farms, save, setFarmStatus,
   }
 }
+
+export const examples: FarmListItem[] = [
+  {
+    id: 0,
+    name: 'Joe\'s Farm',
+    status: toStatusObject(RED),
+    timestamp: 20
+  },
+  {
+    id: 1,
+    name: 'Sally\'s Farm',
+    status: toStatusObject(YELLOW),
+    timestamp: 5
+  },
+  {
+    id: 2,
+    name: 'Sam\'s Farm',
+    status: toStatusObject(GREEN),
+    timestamp: 0
+  },
+];
