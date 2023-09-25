@@ -4,6 +4,7 @@ import { onMounted, provide, reactive, ref } from 'vue';
 import { toBackendFarmObject, BackendFarmObject, FarmListItem } from './farms';
 import { colorMap, GREEN, RED, YELLOW, toStatusObject } from './status';
 import FarmList from './components/FarmList.vue';
+import Modal from './components/Modal.vue';
 
 const farms: FarmListItem[] = reactive([]);
 
@@ -58,26 +59,23 @@ const examples: FarmListItem[] = [
 </script>
 
 <template>
-  <dialog :open="selectedFarmIndex >= 0">
-    <article>
-      <header>
-        <a href="#close" aria-label="Close" class="close" @click="editFarm(-1)"></a>
-        Edit {{ farms[selectedFarmIndex]?.name }}
-      </header>
-      <fieldset>
-        <div v-for="(c, i) in colors" :for="c.title" :key="`color-radio-${i}`">
-          <label>{{ c.title }}</label>
-          <input
-            type="radio"
-            :name="c.title"
-            :value="i"
-            :checked="c.symbol === farms[selectedFarmIndex]?.status?.symbol"
-            @input="setFarmStatus(c.symbol)">
-        </div>
-        <legend>Status</legend>
-      </fieldset>
-    </article>
-  </dialog>
+  <modal v-if="selectedFarmIndex >= 0" @close="editFarm(-1)">
+    <template #header>
+      Edit {{ farms[selectedFarmIndex]?.name }} Status
+    </template>
+    <fieldset>
+      <span v-for="(c, i) in colors" class="input-group" :key="`color-radio-${i}`">
+        <input
+          type="radio"
+          :id="c.title"
+          :name="c.title"
+          :value="i"
+          :checked="c.symbol === farms[selectedFarmIndex]?.status?.symbol"
+          @input="setFarmStatus(c.symbol)">
+        <label :for="c.title">{{ c.title }}</label>
+      </span>
+    </fieldset>
+  </modal>
   <main class="container">
     <header>
       <hgroup>
@@ -110,5 +108,10 @@ const examples: FarmListItem[] = [
 main header {
   padding-top: 10vh;
   text-align: center;
+}
+
+.input-group {
+  display: flex;
+  flex-flow: row;
 }
 </style>
