@@ -2,8 +2,8 @@
 import { ref, Teleport } from 'vue';
 import useFarms from '../farms';
 import { colorList } from '../status';
-import Modal from './Modal.vue';
-import RadioInput from './RadioInput.vue';
+import Modal from '../components/Modal.vue';
+import RadioInput from '../components/RadioInput.vue';
 
 const {
   examples, farms, save, setFarmStatus,

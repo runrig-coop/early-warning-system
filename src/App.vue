@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ProductionStatusByFarm from './components/ProductionStatusByFarm.vue';
+import ProductionStatusByFarm from './views/ProductionStatusByFarm.vue';
 
 </script>
 
