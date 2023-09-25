@@ -3,6 +3,7 @@ import { ref, Teleport } from 'vue';
 import useFarms from '../farms';
 import { colorList } from '../status';
 import Modal from './Modal.vue';
+import RadioInput from './RadioInput.vue';
 
 const {
   examples, farms, save, setFarmStatus,
@@ -22,16 +23,13 @@ function editFarm(i) {
         Edit {{ farms[selectedFarmIndex]?.name }} Status
       </template>
       <fieldset>
-        <span v-for="(c, i) in colorList" class="input-group" :key="`color-radio-${i}`">
-          <input
-            type="radio"
-            :id="c.title"
-            :name="c.title"
-            :value="i"
-            :checked="c.symbol === farms[selectedFarmIndex]?.status?.symbol"
-            @input="setFarmStatus(selectedFarmIndex, c.symbol)">
-          <label :for="c.title">{{ c.title }}</label>
-        </span>
+        <radio-input
+          v-for="(c, i) in colorList"
+          :label="c.title"
+          :value="i"
+          :checked="c.symbol === farms[selectedFarmIndex]?.status?.symbol"
+          @input="setFarmStatus(selectedFarmIndex, c.symbol)"
+          :key="`color-radio-${i}`"/>
       </fieldset>
     </modal>
   </teleport>
@@ -82,11 +80,6 @@ function editFarm(i) {
 </template>
 
 <style scoped>
-.input-group {
-  display: flex;
-  flex-flow: row;
-}
-
 fieldset.save-btn-group {
   text-align: center;
 }
