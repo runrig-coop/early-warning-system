@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FarmList from './components/FarmList.vue';
+import ProductionStatusByFarm from './components/ProductionStatusByFarm.vue';
 
 </script>
 
@@ -8,7 +8,7 @@ import FarmList from './components/FarmList.vue';
     <header>
       <h1>Richland Gro-Op: Spring Crop Plan</h1>
     </header>
-    <farm-list/>
+    <production-status-by-farm/>
   </main>
 </template>
 
