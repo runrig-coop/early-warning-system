@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, Teleport } from 'vue';
 import useFarms, { examples } from '../farms';
-import { colorList } from '../status';
+import { colorList, DEFAULT_STATUS_SYMBOL, toStatusObject } from '../status';
 import Modal from '../components/Modal.vue';
 import RadioInput from '../components/RadioInput.vue';
 
@@ -12,6 +12,28 @@ const {
 const selectedFarmIndex = ref(-1);
 function editFarm(i) {
   selectedFarmIndex.value = i;
+}
+
+const newFarmName = ref('');
+const newFarmStatus = ref(DEFAULT_STATUS_SYMBOL);
+const newFarmTimestamp = ref(0);
+const showNewFarm = ref(false);
+function initFarm() {
+  newFarmName.value = '';
+  newFarmStatus.value = DEFAULT_STATUS_SYMBOL;
+  newFarmTimestamp.value = 0;
+  showNewFarm.value = true;
+}
+function addFarm() {
+  const id = farms.reduce((high, { id }) => id > high ? id + 1 : high, 0);
+  const newFarm = {
+    id,
+    name: newFarmName.value,
+    status: toStatusObject(newFarmStatus.value),
+    timestamp: newFarmTimestamp.value,
+  };
+  farms.push(newFarm);
+  showNewFarm.value = false;
 }
 </script>
 
@@ -30,6 +52,49 @@ function editFarm(i) {
           @input="setFarmStatus(selectedFarmIndex, c.symbol)"
           :key="`color-radio-${i}`"/>
       </fieldset>
+    </modal>
+    <modal v-if="showNewFarm === true" @close="showNewFarm = false">
+      <template #header>Add Farm</template>
+      <div class="add-farm-form">
+        <fieldset class="name-field">
+          <label for="farm-name">Farm Name</label>
+          <input
+            type="text"
+            id="farm-name"
+            name="farm-name"
+            v-model="newFarmName">
+        </fieldset>
+        <fieldset class="status-field">
+          <legend>Status</legend>
+          <radio-input
+            v-for="(c, i) in colorList"
+            :label="c.title"
+            :value="i"
+            :checked="c.symbol === newFarmStatus"
+            @input="newFarmStatus = c.symbol"/>
+        </fieldset>
+        <fieldset class="time-field">
+          <label for="farm-timestamp">Days Since Last Status Update</label>
+          <input
+            type="number"
+            id="farm-timestamp"
+            name="farm-timestamp"
+            v-model="newFarmTimestamp">
+        </fieldset>
+      </div>
+      <template #footer>
+        <span
+          role="button"
+          @click="addFarm">
+          Add
+        </span>
+        <span
+          role="button"
+          @click="showNewFarm = false"
+          class="secondary">
+          Discard
+        </span>
+      </template>
     </modal>
   </teleport>
   <section>
@@ -75,6 +140,7 @@ function editFarm(i) {
         </tr>
       </tbody>
     </table>
+    <span role="button" @click="initFarm">Add Farm</span>
   </section>
 </template>
 
@@ -82,6 +148,25 @@ function editFarm(i) {
 fieldset.save-btn-group {
   text-align: center;
 }
+
+fieldset.name-field {
+  grid-area: name-field;
+}
+fieldset.status-field {
+  grid-area: status-field;
+}
+fieldset.time-field {
+  grid-area: time-field;
+}
+.add-farm-form {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: auto;
+  grid-template-areas: 
+    "name-field name-field"
+    "status-field time-field";
+}
+
 th[colspan="3"] {
   text-align: center;
   font-size: 1.75rem;
