@@ -1,17 +1,29 @@
 <script setup lang="ts">
-import { ref, Teleport } from 'vue';
+import { reactive, ref, Teleport } from 'vue';
 import useFarms, { examples } from '../farms';
 import { colorList, DEFAULT_STATUS_SYMBOL, toStatusObject } from '../status';
 import Modal from '../components/Modal.vue';
 import RadioInput from '../components/RadioInput.vue';
+import IconEdit from '../components/IconEdit.vue';
 
 const {
-  farms, save, setFarmStatus,
+  farms, save, setFarmName, setFarmStatus,
 } = useFarms();
 
 const selectedFarmIndex = ref(-1);
 function editFarm(i) {
   selectedFarmIndex.value = i;
+}
+
+const selectedFarmName = reactive({ index: -1, name: '' });
+function editFarmName(i, name) {
+  selectedFarmName.name = name;
+  selectedFarmName.index = i;
+}
+function updateFarmName() {
+  const { index, name } = selectedFarmName;
+  setFarmName(index, name);
+  editFarmName(-1, '');
 }
 
 const newFarmName = ref('');
@@ -41,7 +53,7 @@ function addFarm() {
   <teleport to="body">
     <modal v-if="selectedFarmIndex >= 0" @close="editFarm(-1)">
       <template #header>
-        Edit {{ farms[selectedFarmIndex]?.name }} Status
+        {{ farms[selectedFarmIndex]?.name }} Status
       </template>
       <fieldset>
         <radio-input
@@ -52,6 +64,25 @@ function addFarm() {
           @input="setFarmStatus(selectedFarmIndex, c.symbol)"
           :key="`color-radio-${i}`"/>
       </fieldset>
+    </modal>
+    <modal v-if="selectedFarmName.index >= 0" @close="editFarmName(-1, '')">
+      <template #header>Change Name</template>
+      <fieldset>
+        <input type="text" v-model="selectedFarmName.name">
+      </fieldset>
+      <template #footer>
+        <span
+          role="button"
+          @click="updateFarmName">
+          Save
+        </span>
+        <span
+          role="button"
+          @click="editFarmName(-1, '')"
+          class="secondary">
+          Cancel
+        </span>
+      </template>
     </modal>
     <modal v-if="showNewFarm === true" @close="showNewFarm = false">
       <template #header>Add Farm</template>
@@ -131,7 +162,14 @@ function addFarm() {
               {{ farm.status.emoji }}
             </span>
           </td>
-          <td class="name">{{ farm.name }}</td>
+          <td class="name">
+            <span class="name-span">
+              {{ farm.name }}
+              <span class="edit-icon" @click.stop="editFarmName(i, farm.name)">
+                <icon-edit/>
+              </span>
+            </span>
+          </td>
           <td class="secondary-info">
             Last report: {{
               farm.timestamp === 0 ? 'Today' : `${farm.timestamp} days ago`
@@ -171,6 +209,10 @@ th[colspan="3"] {
   text-align: center;
   font-size: 1.75rem;
 }
+tr:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 3px var(--primary-focus);
+}
 
 .secondary-info {
   color: #777;
@@ -182,5 +224,29 @@ th[colspan="3"] {
 
 .name {
   font-size: 1.5rem;
+}
+.name-span {
+  display: inline-block;
+  position: relative;
+}
+span.edit-icon {
+  display: block;
+  position: absolute;
+  cursor: pointer;
+  top: calc(50% - 1.5rem);
+  right: calc(-2 * 1.5rem);
+  height: calc(1.5rem * 2);
+  padding: calc(1.5rem * .5);
+}
+span.edit-icon svg {
+  display: block;
+  height: 1.5rem;
+  width: 1.5rem;
+  stroke: var(--primary);
+  fill: none;
+}
+span.edit-icon:hover svg {
+  filter: drop-shadow(0px 0px 3px var(--primary-focus));
+  stroke-width: 1.25px;
 }
 </style>

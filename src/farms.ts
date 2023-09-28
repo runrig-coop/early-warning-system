@@ -34,11 +34,16 @@ export default function useFarms() {
     invoke('save', { farms: cache });
   }
 
+  function setFarmName(i: number, name: string): void {
+    farms[i].name = name;
+  }
+
   function setFarmStatus(i: number, color: string|symbol): void {
     farms[i].status = toStatusObject(color);
   }
+
   return {
-    farms, save, setFarmStatus,
+    farms, save, setFarmName, setFarmStatus,
   }
 }
 
