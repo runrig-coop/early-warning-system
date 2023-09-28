@@ -55,6 +55,9 @@ function addFarm() {
   farms.push(newFarm);
   showNewFarm.value = false;
 }
+
+const rowHoverRefs = ref<boolean[]>([]);
+const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; };
 </script>
 
 <template>
@@ -188,6 +191,8 @@ function addFarm() {
       <tbody>
         <tr
           v-for="(farm, i) in farms" :key="`farm-${i}`"
+          @mouseenter="setRowHoverRef(i, true)"
+          @mouseleave="setRowHoverRef(i, false)"
           @click="editFarm(i)">
           <td class="status">
             <span>
@@ -197,7 +202,10 @@ function addFarm() {
           <td class="name">
             <span class="name-span">
               {{ farm.name }}
-              <span class="edit-icon" @click.stop="editFarmName(i, farm.name)">
+              <span
+                v-if="rowHoverRefs[i]"
+                class="edit-icon"
+                @click.stop="editFarmName(i, farm.name)">
                 <icon-edit/>
               </span>
             </span>
