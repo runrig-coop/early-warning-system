@@ -4,6 +4,7 @@ import useFarms, { examples } from '../farms';
 import { colorList, DEFAULT_STATUS_SYMBOL, toStatusObject } from '../status';
 import Modal from '../components/Modal.vue';
 import RadioInput from '../components/RadioInput.vue';
+import IconDelete from '../components/IconDelete.vue';
 import IconEdit from '../components/IconEdit.vue';
 
 const {
@@ -23,6 +24,13 @@ function editFarmName(i, name) {
 function updateFarmName() {
   const { index, name } = selectedFarmName;
   setFarmName(index, name);
+  editFarmName(-1, '');
+}
+
+const readyToDelete = ref(false);
+function confirmDelete(bool) {
+  if (bool) farms.splice(selectedFarmName.index, 1);
+  readyToDelete.value = false;
   editFarmName(-1, '');
 }
 
@@ -65,12 +73,19 @@ function addFarm() {
           :key="`color-radio-${i}`"/>
       </fieldset>
     </modal>
-    <modal v-if="selectedFarmName.index >= 0" @close="editFarmName(-1, '')">
+    <modal
+      v-if="selectedFarmName.index >= 0 && !readyToDelete"
+      @close="editFarmName(-1, '')">
       <template #header>Change Name</template>
       <fieldset>
         <input type="text" v-model="selectedFarmName.name">
       </fieldset>
       <template #footer>
+        <span
+          @click="readyToDelete = true"
+          class="delete-farm">
+          <icon-delete/>
+        </span>
         <span
           role="button"
           @click="updateFarmName">
@@ -79,6 +94,23 @@ function addFarm() {
         <span
           role="button"
           @click="editFarmName(-1, '')"
+          class="secondary">
+          Cancel
+        </span>
+      </template>
+    </modal>
+    <modal v-if="readyToDelete">
+      <template #header>Change Name</template>
+      <p>Permanently delete {{ selectedFarmName.name }}?</p>
+      <template #footer>
+        <span
+          role="button"
+          @click="confirmDelete(true)">
+          Delete
+        </span>
+        <span
+          role="button"
+          @click="confirmDelete(false)"
           class="secondary">
           Cancel
         </span>
@@ -248,5 +280,15 @@ span.edit-icon svg {
 span.edit-icon:hover svg {
   filter: drop-shadow(0px 0px 3px var(--primary-focus));
   stroke-width: 1.25px;
+}
+
+.delete-farm {
+  padding: calc(1.5rem * .5);
+  cursor: pointer;
+}
+.delete-farm svg {
+  fill: var(--del-color);
+  height: 1.5rem;
+  width: 1.5rem;
 }
 </style>
