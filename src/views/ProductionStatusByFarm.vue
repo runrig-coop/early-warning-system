@@ -241,7 +241,7 @@ th[colspan="3"] {
   text-align: center;
   font-size: 1.75rem;
 }
-tr:hover {
+tr:hover:not(thead tr) {
   cursor: pointer;
   box-shadow: 0px 0px 3px var(--primary-focus);
 }
