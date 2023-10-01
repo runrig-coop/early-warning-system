@@ -19,7 +19,9 @@ enum ModalState {
 const modalState = ref<ModalState>(ModalState.Closed);
 
 const generateId = () => farms.reduce((hi, { id }) => id > hi ? id + 1 : hi, 0);
-type SelectedFarm = { index: number; name: string; status: symbol; timestamp: number };
+type SelectedFarm = {
+  index: number; name: string; status: symbol; timestamp: number
+};
 const farmDefaults: SelectedFarm = {
   index: -1,
   name: '',
@@ -90,7 +92,9 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
   <teleport to="body">
 
     <!-- MODAL: Where the selected farm's properties are edited. -->
-    <modal v-if="modalState !== ModalState.Closed">
+    <modal
+      v-if="modalState !== ModalState.Closed"
+      @close="modalState = ModalState.Closed">
       <!-- MODAL HEADER -->
       <template #header>
         {{ modalHeader[modalState] }}
@@ -164,7 +168,7 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
         </span>
         <span
           role="button"
-          @close="modalState = ModalState.Closed"
+          @click="modalState = ModalState.Closed"
           class="secondary">
           {{ modalState === ModalState.CreateFarm ? 'Discard' : 'Cancel' }}
         </span>
