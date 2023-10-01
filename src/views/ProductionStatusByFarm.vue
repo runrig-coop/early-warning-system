@@ -66,12 +66,12 @@ function clearAllFarms() {
   save();
 }
 
-const modalHeader = reactive<{ [key in ModalState]?: string }>({
-  [ModalState.UpdateStatus]: `${selectedFarm.name} Status`,
+const modalHeader = computed<{ [key in ModalState]?: string }>(() => ({
+  [ModalState.UpdateStatus]: `Update Status for ${selectedFarm.name}`,
   [ModalState.UpdateName]: 'Change Farm Name',
   [ModalState.CreateFarm]: 'Add Farm',
   [ModalState.DeleteFarm]: 'Confirm Deletion',
-});
+}));
 
 // These modal states render the same pair of buttons: the primary will upsert
 // the selected farm then close; the secondary will cancel the action then close.
