@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, Teleport } from 'vue';
 import useFarms, { examples } from '../farms';
-import { colorList, DEFAULT_STATUS_SYMBOL, toStatusObject } from '../status';
+import { colorList, DEFAULT_STATUS_SYMBOL, StatusObject, toStatusObject } from '../status';
 import Modal from '../components/Modal.vue';
 import RadioInput from '../components/RadioInput.vue';
 import IconDelete from '../components/IconDelete.vue';
@@ -39,8 +39,13 @@ function editFarm<K extends keyof SelectedFarm, V extends SelectedFarm[K]>(key: 
 }
 
 function upsert() {
-  const { index = farms.length, name, timestamp } = selectedFarm;
-  const status = toStatusObject(selectedFarm.status);
+  const { index = farms.length, name } = selectedFarm;
+  let { status, timestamp }: {
+    status: symbol|StatusObject, timestamp: number
+  } = selectedFarm;
+  // If the farm is not newly created & its status changed, reset the timestamp.
+  if (farms[index] && status !== farms[index].status?.symbol) timestamp = 0;
+  status = toStatusObject(status);
   const id = index in farms ? farms[index].id : generateId();
   farms.splice(index, index < farms.length ? 1 : 0, { id, name, status, timestamp });
   modalState.value = ModalState.Closed;
