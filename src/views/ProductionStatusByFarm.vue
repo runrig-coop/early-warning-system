@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, Teleport } from 'vue';
+import { computed, reactive, ref, Teleport } from 'vue';
 import useFarms, { examples } from '../farms';
 import { colorList, DEFAULT_STATUS_SYMBOL, toStatusObject } from '../status';
 import Modal from '../components/Modal.vue';
@@ -51,50 +51,93 @@ function upsert() {
   modalState.value = ModalState.Closed;
 }
 
+const modalHeader = reactive<{ [key in ModalState]?: string }>({
+  [ModalState.UpdateStatus]: `${selectedFarm.name} Status`,
+  [ModalState.UpdateName]: 'Change Farm Name',
+  [ModalState.CreateFarm]: 'Add Farm',
+  [ModalState.DeleteFarm]: 'Confirm Deletion',
+});
+
+// These modal states render the same pair of buttons: the primary will upsert
+// the selected farm then close; the secondary will cancel the action then close.
+const useUpsertOrCloseFooter = computed(() => [
+  ModalState.UpdateName,
+  ModalState.UpdateStatus,
+  ModalState.CreateFarm,
+].includes(modalState.value));
+
 const rowHoverRefs = ref<boolean[]>([]);
 const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; };
 </script>
 
 <template>
+  <!-- Use Vue.Teleport to append it to the document's body element. -->
   <teleport to="body">
-    <modal
-      v-if="modalState === ModalState.UpdateStatus"
-      @close="modalState = ModalState.Closed">
+
+    <!-- MODAL: Where the selected farm's properties are edited. -->
+    <modal v-if="modalState !== ModalState.Closed">
+      <!-- MODAL HEADER -->
       <template #header>
-        {{ selectedFarm.name }} Status
+        {{ modalHeader[modalState] }}
       </template>
-      <fieldset>
-        <radio-input
-          v-for="(c, i) in colorList"
-          :label="c.title"
-          :value="i"
-          :checked="c.symbol === selectedFarm.status"
-          @input="editFarm('status', c.symbol)"
-          :key="`color-radio-${i}`"/>
-      </fieldset>
-      <template #footer>
-        <span
-          role="button"
-          @click="upsert">
-          Save
-        </span>
-        <span
-          role="button"
-          @close="modalState = ModalState.Closed"
-          class="secondary">
-          Cancel
-        </span>
+
+      <!-- MODAL BODY -->
+      <template #default>
+        <!-- UPDATE STATUS FORM -->
+        <fieldset v-if="modalState === ModalState.UpdateStatus">
+          <radio-input
+            v-for="(c, i) in colorList"
+            :label="c.title"
+            :value="i"
+            :checked="c.symbol === selectedFarm.status"
+            @input="editFarm('status', c.symbol)"
+            :key="`color-radio-${i}`"/>
+        </fieldset>
+  
+        <!-- UPDATE NAME FORM -->
+        <fieldset v-if="modalState === ModalState.UpdateName">
+          <input type="text" v-model="selectedFarm.name">
+        </fieldset>
+  
+        <!-- DELETE CONFIRMATION MESSAGE -->
+        <p v-if="modalState === ModalState.DeleteFarm">
+          Permanently delete {{ selectedFarm.name }}?
+        </p>
+  
+        <!-- ADD FARM FORM -->
+        <div class="add-farm-form" v-if="modalState === ModalState.CreateFarm">
+          <fieldset class="name-field">
+            <label for="farm-name">Farm Name</label>
+            <input
+              type="text"
+              id="farm-name"
+              name="farm-name"
+              v-model="selectedFarm.name">
+          </fieldset>
+          <fieldset class="status-field">
+            <legend>Status</legend>
+            <radio-input
+              v-for="(c, i) in colorList"
+              :label="c.title"
+              :value="i"
+              :checked="c.symbol === selectedFarm.status"
+              @input="selectedFarm.status = c.symbol"/>
+          </fieldset>
+          <fieldset class="time-field">
+            <label for="farm-timestamp">Days Since Last Status Update</label>
+            <input
+              type="number"
+              id="farm-timestamp"
+              name="farm-timestamp"
+              v-model="selectedFarm.timestamp">
+          </fieldset>
+        </div>
       </template>
-    </modal>
-    <modal
-      v-if="modalState === ModalState.UpdateName"
-      @close="modalState = ModalState.Closed">
-      <template #header>Change Name</template>
-      <fieldset>
-        <input type="text" v-model="selectedFarm.name">
-      </fieldset>
-      <template #footer>
+
+      <!-- MODAL FOOTER: UpdateStatus, UpdateName & CreateFarm  -->
+      <template #footer v-if="useUpsertOrCloseFooter">
         <span
+          v-if="modalState === ModalState.UpdateName"
           @click="modalState = ModalState.DeleteFarm"
           class="delete-farm">
           <icon-delete/>
@@ -102,22 +145,18 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
         <span
           role="button"
           @click="upsert">
-          Save
+          {{ modalState === ModalState.CreateFarm ? 'Add' : 'Save' }}
         </span>
         <span
           role="button"
           @close="modalState = ModalState.Closed"
           class="secondary">
-          Cancel
+          {{ modalState === ModalState.CreateFarm ? 'Discard' : 'Cancel' }}
         </span>
       </template>
-    </modal>
-    <modal
-      v-if="modalState === ModalState.DeleteFarm"
-      @close="modalState = ModalState.Closed">
-      <template #header>Confirm Deletion</template>
-      <p>Permanently delete {{ selectedFarm.name }}?</p>
-      <template #footer>
+
+      <!-- MODAL FOOTER: DeleteFarm -->
+      <template #footer v-if="modalState === ModalState.DeleteFarm">
         <span
           role="button"
           @click="confirmDelete(true)">
@@ -131,52 +170,9 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
         </span>
       </template>
     </modal>
-    <modal
-      v-if="modalState === ModalState.CreateFarm"
-      @close="modalState = ModalState.Closed">
-      <template #header>Add Farm</template>
-      <div class="add-farm-form">
-        <fieldset class="name-field">
-          <label for="farm-name">Farm Name</label>
-          <input
-            type="text"
-            id="farm-name"
-            name="farm-name"
-            v-model="selectedFarm.name">
-        </fieldset>
-        <fieldset class="status-field">
-          <legend>Status</legend>
-          <radio-input
-            v-for="(c, i) in colorList"
-            :label="c.title"
-            :value="i"
-            :checked="c.symbol === selectedFarm.status"
-            @input="selectedFarm.status = c.symbol"/>
-        </fieldset>
-        <fieldset class="time-field">
-          <label for="farm-timestamp">Days Since Last Status Update</label>
-          <input
-            type="number"
-            id="farm-timestamp"
-            name="farm-timestamp"
-            v-model="selectedFarm.timestamp">
-        </fieldset>
-      </div>
-      <template #footer>
-        <span
-          role="button"
-          @click="upsert">
-          Add
-        </span>
-        <span
-          role="button"
-          @click="modalState = ModalState.Closed"
-          class="secondary">
-          Discard
-        </span>
-      </template>
-    </modal>
   </teleport>
+
+  <!-- LIST OF FARMS AND THEIR PRODUCTION STATUS -->
   <section>
     <fieldset class="save-btn-group">
       <span role="button" @click="save" class="outline">Save</span>
