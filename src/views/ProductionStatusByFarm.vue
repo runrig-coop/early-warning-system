@@ -38,17 +38,27 @@ function editFarm<K extends keyof SelectedFarm, V extends SelectedFarm[K]>(key: 
   selectedFarm[key] = value;
 }
 
-function confirmDelete(bool) {
-  if (bool) farms.splice(selectedFarm.index, 1);
-  editFarm('index', -1);
-  modalState.value = ModalState.Closed;
-}
 function upsert() {
   const { index = farms.length, name, timestamp } = selectedFarm;
   const status = toStatusObject(selectedFarm.status);
   const id = index in farms ? farms[index].id : generateId();
   farms.splice(index, index < farms.length ? 1 : 0, { id, name, status, timestamp });
   modalState.value = ModalState.Closed;
+  save();
+}
+function confirmDelete(bool) {
+  if (bool) farms.splice(selectedFarm.index, 1);
+  editFarm('index', -1);
+  modalState.value = ModalState.Closed;
+  save();
+}
+function addExamples() {
+  farms.push(...examples);
+  save();
+}
+function clearAllFarms() {
+  farms.splice(0);
+  save();
 }
 
 const modalHeader = reactive<{ [key in ModalState]?: string }>({
@@ -174,24 +184,6 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
 
   <!-- LIST OF FARMS AND THEIR PRODUCTION STATUS -->
   <section>
-    <fieldset class="save-btn-group">
-      <span role="button" @click="save" class="outline">Save</span>
-        &nbsp;
-        <span role="button"
-          v-if="farms.length === 0"
-          @click="farms.push(...examples)"
-          class="outline secondary">
-          Examples
-        </span>
-        &nbsp;
-        <span
-          role="button"
-          v-if="farms.length > 0"
-          @click="farms.splice(0)"
-          class="outline secondary">
-          Clear
-        </span>
-    </fieldset>
     <table role="grid">
       <thead>
         <tr>
@@ -228,7 +220,26 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
         </tr>
       </tbody>
     </table>
-    <span role="button" @click="selectFarm(farms.length, ModalState.CreateFarm)">Add Farm</span>
+    <span
+      role="button"
+      @click="selectFarm(farms.length, ModalState.CreateFarm)">
+      Add Farm
+    </span>
+    &nbsp;
+    <span role="button"
+      v-if="farms.length === 0"
+      @click="addExamples"
+      class="outline secondary">
+      Add Examples
+    </span>
+    &nbsp;
+    <span
+      role="button"
+      v-if="farms.length > 0"
+      @click="clearAllFarms"
+      class="outline secondary">
+      Clear All Farms
+    </span>
   </section>
 </template>
 
