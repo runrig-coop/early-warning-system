@@ -7,53 +7,48 @@ import RadioInput from '../components/RadioInput.vue';
 import IconDelete from '../components/IconDelete.vue';
 import IconEdit from '../components/IconEdit.vue';
 
-const {
-  farms, save, setFarmName, setFarmStatus,
-} = useFarms();
+const { farms, save } = useFarms();
 
-const selectedFarmIndex = ref(-1);
-function editFarm(i) {
-  selectedFarmIndex.value = i;
+enum ModalState {
+  Closed = 'CLOSED',
+  UpdateStatus = 'UPDATE_STATUS',
+  UpdateName = 'UPDATE_NAME',
+  CreateFarm = 'CREATE_FARM',
+  DeleteFarm = 'DELETE_FARM',
+}
+const modalState = ref<ModalState>(ModalState.Closed);
+
+const generateId = () => farms.reduce((hi, { id }) => id > hi ? id + 1 : hi, 0);
+type SelectedFarm = { index: number; name: string; status: symbol; timestamp: number };
+const farmDefaults: SelectedFarm = {
+  index: -1,
+  name: '',
+  status: DEFAULT_STATUS_SYMBOL,
+  timestamp: 0,
+}
+const selectedFarm = reactive<SelectedFarm>({...farmDefaults});
+function selectFarm(i: number = farms.length, modal?: ModalState) {
+  selectedFarm.index = i;
+  selectedFarm.name = farms[i]?.name || farmDefaults.name;
+  selectedFarm.status = farms[i]?.status?.symbol || farmDefaults.status;
+  selectedFarm.timestamp = farms[i]?.timestamp || farmDefaults.timestamp;
+  modalState.value = modal || ModalState.Closed;
+}
+function editFarm<K extends keyof SelectedFarm, V extends SelectedFarm[K]>(key: K, value: V) {
+  selectedFarm[key] = value;
 }
 
-const selectedFarmName = reactive({ index: -1, name: '' });
-function editFarmName(i, name) {
-  selectedFarmName.name = name;
-  selectedFarmName.index = i;
-}
-function updateFarmName() {
-  const { index, name } = selectedFarmName;
-  setFarmName(index, name);
-  editFarmName(-1, '');
-}
-
-const readyToDelete = ref(false);
 function confirmDelete(bool) {
-  if (bool) farms.splice(selectedFarmName.index, 1);
-  readyToDelete.value = false;
-  editFarmName(-1, '');
+  if (bool) farms.splice(selectedFarm.index, 1);
+  editFarm('index', -1);
+  modalState.value = ModalState.Closed;
 }
-
-const newFarmName = ref('');
-const newFarmStatus = ref(DEFAULT_STATUS_SYMBOL);
-const newFarmTimestamp = ref(0);
-const showNewFarm = ref(false);
-function initFarm() {
-  newFarmName.value = '';
-  newFarmStatus.value = DEFAULT_STATUS_SYMBOL;
-  newFarmTimestamp.value = 0;
-  showNewFarm.value = true;
-}
-function addFarm() {
-  const id = farms.reduce((high, { id }) => id > high ? id + 1 : high, 0);
-  const newFarm = {
-    id,
-    name: newFarmName.value,
-    status: toStatusObject(newFarmStatus.value),
-    timestamp: newFarmTimestamp.value,
-  };
-  farms.push(newFarm);
-  showNewFarm.value = false;
+function upsert() {
+  const { index = farms.length, name, timestamp } = selectedFarm;
+  const status = toStatusObject(selectedFarm.status);
+  const id = index in farms ? farms[index].id : generateId();
+  farms.splice(index, index < farms.length ? 1 : 0, { id, name, status, timestamp });
+  modalState.value = ModalState.Closed;
 }
 
 const rowHoverRefs = ref<boolean[]>([]);
@@ -62,49 +57,66 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
 
 <template>
   <teleport to="body">
-    <modal v-if="selectedFarmIndex >= 0" @close="editFarm(-1)">
+    <modal
+      v-if="modalState === ModalState.UpdateStatus"
+      @close="modalState = ModalState.Closed">
       <template #header>
-        {{ farms[selectedFarmIndex]?.name }} Status
+        {{ selectedFarm.name }} Status
       </template>
       <fieldset>
         <radio-input
           v-for="(c, i) in colorList"
           :label="c.title"
           :value="i"
-          :checked="c.symbol === farms[selectedFarmIndex]?.status?.symbol"
-          @input="setFarmStatus(selectedFarmIndex, c.symbol)"
+          :checked="c.symbol === selectedFarm.status"
+          @input="editFarm('status', c.symbol)"
           :key="`color-radio-${i}`"/>
-      </fieldset>
-    </modal>
-    <modal
-      v-if="selectedFarmName.index >= 0 && !readyToDelete"
-      @close="editFarmName(-1, '')">
-      <template #header>Change Name</template>
-      <fieldset>
-        <input type="text" v-model="selectedFarmName.name">
       </fieldset>
       <template #footer>
         <span
-          @click="readyToDelete = true"
-          class="delete-farm">
-          <icon-delete/>
-        </span>
-        <span
           role="button"
-          @click="updateFarmName">
+          @click="upsert">
           Save
         </span>
         <span
           role="button"
-          @click="editFarmName(-1, '')"
+          @close="modalState = ModalState.Closed"
           class="secondary">
           Cancel
         </span>
       </template>
     </modal>
-    <modal v-if="readyToDelete">
+    <modal
+      v-if="modalState === ModalState.UpdateName"
+      @close="modalState = ModalState.Closed">
       <template #header>Change Name</template>
-      <p>Permanently delete {{ selectedFarmName.name }}?</p>
+      <fieldset>
+        <input type="text" v-model="selectedFarm.name">
+      </fieldset>
+      <template #footer>
+        <span
+          @click="modalState = ModalState.DeleteFarm"
+          class="delete-farm">
+          <icon-delete/>
+        </span>
+        <span
+          role="button"
+          @click="upsert">
+          Save
+        </span>
+        <span
+          role="button"
+          @close="modalState = ModalState.Closed"
+          class="secondary">
+          Cancel
+        </span>
+      </template>
+    </modal>
+    <modal
+      v-if="modalState === ModalState.DeleteFarm"
+      @close="modalState = ModalState.Closed">
+      <template #header>Confirm Deletion</template>
+      <p>Permanently delete {{ selectedFarm.name }}?</p>
       <template #footer>
         <span
           role="button"
@@ -119,7 +131,9 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
         </span>
       </template>
     </modal>
-    <modal v-if="showNewFarm === true" @close="showNewFarm = false">
+    <modal
+      v-if="modalState === ModalState.CreateFarm"
+      @close="modalState = ModalState.Closed">
       <template #header>Add Farm</template>
       <div class="add-farm-form">
         <fieldset class="name-field">
@@ -128,7 +142,7 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
             type="text"
             id="farm-name"
             name="farm-name"
-            v-model="newFarmName">
+            v-model="selectedFarm.name">
         </fieldset>
         <fieldset class="status-field">
           <legend>Status</legend>
@@ -136,8 +150,8 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
             v-for="(c, i) in colorList"
             :label="c.title"
             :value="i"
-            :checked="c.symbol === newFarmStatus"
-            @input="newFarmStatus = c.symbol"/>
+            :checked="c.symbol === selectedFarm.status"
+            @input="selectedFarm.status = c.symbol"/>
         </fieldset>
         <fieldset class="time-field">
           <label for="farm-timestamp">Days Since Last Status Update</label>
@@ -145,18 +159,18 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
             type="number"
             id="farm-timestamp"
             name="farm-timestamp"
-            v-model="newFarmTimestamp">
+            v-model="selectedFarm.timestamp">
         </fieldset>
       </div>
       <template #footer>
         <span
           role="button"
-          @click="addFarm">
+          @click="upsert">
           Add
         </span>
         <span
           role="button"
-          @click="showNewFarm = false"
+          @click="modalState = ModalState.Closed"
           class="secondary">
           Discard
         </span>
@@ -193,7 +207,7 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
           v-for="(farm, i) in farms" :key="`farm-${i}`"
           @mouseenter="setRowHoverRef(i, true)"
           @mouseleave="setRowHoverRef(i, false)"
-          @click="editFarm(i)">
+          @click="selectFarm(i, ModalState.UpdateStatus)">
           <td class="status">
             <span>
               {{ farm.status.emoji }}
@@ -205,7 +219,7 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
               <span
                 v-if="rowHoverRefs[i]"
                 class="edit-icon"
-                @click.stop="editFarmName(i, farm.name)">
+                @click.stop="selectFarm(i, ModalState.UpdateName)">
                 <icon-edit/>
               </span>
             </span>
@@ -218,7 +232,7 @@ const setRowHoverRef = (i: number, b: boolean) => { rowHoverRefs.value[i] = b; }
         </tr>
       </tbody>
     </table>
-    <span role="button" @click="initFarm">Add Farm</span>
+    <span role="button" @click="selectFarm(farms.length, ModalState.CreateFarm)">Add Farm</span>
   </section>
 </template>
 
