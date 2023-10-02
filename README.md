@@ -25,15 +25,26 @@ In the process, we also seek to promote an open culture of design and knowledge 
 
 To get involved or learn more about the Runrig community, you can [read the plan], sign up for our [newsletter] or checkout the schedule of Runrig [Open Design Workshops].
 
-### Current Status
+## Project Status
 We are tracking progress on issues using GitHub milestones:
 
-- [x] [Screenshots for Main Dashboard](https://github.com/runrig-coop/early-warning-system/milestone/1)
-- [ ] [Functional prototype](https://github.com/runrig-coop/early-warning-system/milestone/2)
+- [x] [Screenshots for Main Dashboard]
+- [x] [Functional prototype]
+- [ ] Evaluate next steps...
 
-The main screenshot for the first milestone is just meant to gesture towards the kinds of visual hierarchy of the Early Warning System, and a starting point for the second milestone:
+As the last checklist item indicates, we're at a point where we need to take a step back and evaluate what makes sense to prioritize first. Keep an eye on the [issue queue], [discussions] and check back here for updates!
 
-![A list of farms for the Richland Gro-Op Spring Crop Plan, showing for each farm a color-coded red, yellow or green status icon and the date of their last status report, all sorted by relative urgency.](images/first-mockup-screenshot.png)
+### First Functional Prototype (alpha.1)
+![A list of farms for a coop's crop plan, showing color-coded status indicators like the screenshot below, but also with a button to add another farm, cleaner styles and presented in dark mode. It is also in a standalone application window, rather than the browser.](images/EWS_screenshot_2023-10-01.png)
+
+We narrowed ths scope of requirements for what we considered the most essential features for a functional prototype or MVP. This included basic CRUD operations for adding and removing farms and updating the status. Persisting data between sessions was a key requirement, so as the screenshot here implies, we're now developing this primarily as a standalone desktop application, rather than a web app. The data is currently persisted as a very simple JSON document, but other formats and storage media will be explored in future iterations.
+
+For ease of demonstration, we also retained some sample data that can be added quickly and also an option to clear all farms to start over. These won't be permanent features, but while this is functional MVP, it is still mainly for demos and gathering early feedback from prospective users.
+
+### First Screenshot (pre-alpha)
+![A list of farms for a coop's crop plan, showing for each farm a color-coded red, yellow or green status icon and the date of their last status report, all sorted by relative urgency.](images/first-mockup-screenshot.png)
+
+The main screenshot for the first milestone is just meant to gesture towards the kinds of visual hierarchy of the Early Warning System, and a starting point for the second milestone.
 
 ## Data Model
 The data model consists of three tables representing physical items (farm, land, and planting) and three tables representing events or logs recorded by members (measurement, quantitative_measurement, and qualitative_measurement).
