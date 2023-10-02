@@ -51,6 +51,10 @@ The data model consists of three tables representing physical items (farm, land,
 
 ![Data model of the RGO app](images/data_model.png)
 
+[Rust]: https://www.rust-lang.org/
+[Node.js]: https://nodejs.org/
+[Tauri prerequisites]: https://tauri.app/v1/guides/getting-started/prerequisites
+[npm]: https://www.npmjs.com/
 [Skywoman MAIA interviews]: https://github.com/skywoman/multifarm-aggregation-info-arch
 [Richland Gro-Op]: https://richlandgro-op.com/
 [OSU Microfarm Project]: https://osumarion.osu.edu/alumni-initiatives/initiatives/microfarm.html
@@ -63,7 +67,7 @@ The data model consists of three tables representing physical items (farm, land,
 [read the plan]: https://runrig.org/overview.html
 [newsletter]: https://buttondown.email/runrig
 [Open Design Workshops]: https://github.com/runrig-coop/open-design-workshops
-[Rust]: https://www.rust-lang.org/
-[Node.js]: https://nodejs.org/
-[Tauri prerequisites]: https://tauri.app/v1/guides/getting-started/prerequisites
-[npm]: https://www.npmjs.com/
+[Screenshots for Main Dashboard]: https://github.com/runrig-coop/early-warning-system/milestone/1
+[Functional prototype]: https://github.com/runrig-coop/early-warning-system/milestone/2
+[issue queue]: https://github.com/runrig-coop/early-warning-system/issues
+[discussions]: https://github.com/runrig-coop/early-warning-system/discussions
