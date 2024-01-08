@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use chrono::NaiveDate;
 use serde::{Serialize, Deserialize};
-use std::fs::File;
+use std::fs::{DirBuilder, OpenOptions};
 use std::io::prelude::*;
 use early_warning_system::data_model::{Farm, Status};
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -29,33 +29,50 @@ struct SavedState {
     farms: Vec<Farm>
 }
 
-fn path() -> std::path::PathBuf {
-    let mut path = std::env::current_dir().unwrap_or_default();
-    path.push("..");
-    path.push(".cache");
-    path.push("early_warning.json");
-    path
+impl SavedState {
+    fn default() -> SavedState {
+        SavedState { farms: vec![] }
+    }
+}
+
+fn path_to_cache() -> std::path::PathBuf {
+    let cur_dir = std::env::current_dir().unwrap_or_default();
+    let cache_dir = match cur_dir.parent() {
+        Some(p) => p,
+        None => &cur_dir,
+    }.join(".cache");
+    cache_dir.join("early_warning.json")
 }
 
 #[tauri::command]
 fn save(farms: Vec<Farm>) {
     let save_state = SavedState {farms};
-    let f = std::fs::OpenOptions::new()
-        .write(true)
-        .create(true)
-        .open(path())
-        .expect("Couldn't open file");
     let output_text = serde_json::to_string_pretty(&save_state).unwrap();
-    let mut file = File::create(path()).expect("Can't create save file");
+    let mut file = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .create(true)
+        .open(path_to_cache())
+        .expect("Failed to open cache while saving");
     file.write_all(output_text.as_bytes()).expect("Failed to write data to file");
 }
 
 #[tauri::command]
 fn load() -> Vec<Farm> {
-    let try_file = std::fs::File::open(path());
-    let save_state:SavedState = match try_file{
-        Ok(file) => serde_json::from_reader(file).expect("Could not read values."),
-        Err(_)   => SavedState::default(),
+    let cache_path = path_to_cache();
+    DirBuilder::new()
+        .recursive(true)
+        .create(cache_path.parent().unwrap())
+        .unwrap_or_default();
+    let cache = OpenOptions::new()
+        .read(true)
+        .open(cache_path);
+    let save_state: SavedState = match cache {
+        Ok(file) => match serde_json::from_reader(file) {
+            Ok(state) => state,
+            Err(_) => SavedState::default(),
+        },
+        Err(_) => SavedState::default(),
     };
     save_state.farms
 }
