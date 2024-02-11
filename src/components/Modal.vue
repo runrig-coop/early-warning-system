@@ -11,9 +11,9 @@ defineEmits<{
 }>();
 
 defineSlots<{
-  default(): any
-  header(): any
-  footer(): any
+  default(props: {}): any
+  header(props: {}): any
+  footer(props: {}): any
 }>();
 </script>
 
