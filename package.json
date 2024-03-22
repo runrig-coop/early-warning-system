@@ -1,7 +1,7 @@
 {
   "name": "early-warning-system",
   "private": true,
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "type": "module",
   "scripts": {
     "build": "npm run tauri:build",
