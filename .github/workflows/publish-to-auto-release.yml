@@ -2,17 +2,20 @@
 
 name: "publish"
 
-# Only push events on the `main` branch AND with a valid semver tag will trigger the action.
+# The action will be triggered only when a special release branch or
+# a tag with valid semver is pushed is pushed.
 
 on:
   push:
     branches:
-      - main
+      - 'release/v[0-9]+.[0-9]+.[0-9]+**'
     tags:
       - '[0-9]+.[0-9]+.[0-9]+**'
 
-# On each push to the `main` branch it will create or update a GitHub release,
-# build your app, and upload the artifacts to the release.
+# Whenever a branch/tag that matches the glob pattern is pushed, this job will:
+#   - create or update a GitHub release,
+#   - build your app, and
+#   - upload the artifacts to the release.
 
 jobs:
   publish-tauri:
