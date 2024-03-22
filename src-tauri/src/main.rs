@@ -44,6 +44,7 @@ fn path_to_cache() -> std::path::PathBuf {
     cache_dir.join("early_warning.json")
 }
 
+// Replaced for now by Vue onMounted hook within the useFarm composable in TS.
 #[tauri::command]
 fn save(farms: Vec<Farm>) {
     let save_state = SavedState {farms};
@@ -57,6 +58,7 @@ fn save(farms: Vec<Farm>) {
     file.write_all(output_text.as_bytes()).expect("Failed to write data to file");
 }
 
+// Replaced for now by the Vue composable useFarm.save() in TS.
 #[tauri::command]
 fn load() -> Vec<Farm> {
     let cache_path = path_to_cache();

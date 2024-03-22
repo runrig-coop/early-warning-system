@@ -13,6 +13,16 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "fs": {
+        "all": true,
+        "scope": [
+          "$RESOURCE/.cache/early_warning.json",
+          "$RESOURCE/.cache"
+        ]
+      },
+      "path": {
+        "all": true
+      },
       "shell": {
         "all": false,
         "open": true
@@ -28,7 +38,8 @@
         "icons/icon.ico"
       ],
       "identifier": "org.runrig.ews",
-      "targets": "all"
+      "targets": "all",
+      "resources": ["../.cache/*"]
     },
     "security": {
       "csp": null
