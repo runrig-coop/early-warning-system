@@ -41,7 +41,7 @@ fn path_to_cache() -> std::path::PathBuf {
         Some(p) => p,
         None => &cur_dir,
     }.join(".cache");
-    cache_dir.join("early_warning.json")
+    cache_dir.join("farms.json")
 }
 
 // Replaced for now by Vue onMounted hook within the useFarm composable in TS.

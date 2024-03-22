@@ -16,7 +16,7 @@
       "fs": {
         "all": true,
         "scope": [
-          "$RESOURCE/.cache/early_warning.json",
+          "$RESOURCE/.cache/farms.json",
           "$RESOURCE/.cache"
         ]
       },

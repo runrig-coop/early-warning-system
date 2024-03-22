@@ -19,7 +19,7 @@ const toBackendFarmObject = (f: FarmListItem): BackendFarmObject =>
 
 export default function useFarms() {
   const cacheDir = '.cache';
-  const cachePath = `${cacheDir}/early_warning.json`;
+  const cachePath = `${cacheDir}/farms.json`;
   const cacheOpts: { dir: number } = { dir: BaseDirectory.Resource };
   const cacheDirOpts = { ...cacheOpts, recursive: true };
   const farms: FarmListItem[] = reactive([]);
