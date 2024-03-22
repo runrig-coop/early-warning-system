@@ -16,8 +16,5 @@ target/
 # JavaScript/Node package dependencies
 node_modules/
 
-# Cache for testing files etc.
-.cache/
-
 # Frontend build output by Vite/vue-tsc
 dist/
