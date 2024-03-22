@@ -4,12 +4,15 @@
   "version": "1.0.0-alpha.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview",
+    "build": "npm run tauri:build",
     "start": "npm run tauri:dev",
     "tauri": "tauri",
-    "tauri:dev": "tauri dev"
+    "tauri:build": "tauri build",
+    "tauri:debug": "tauri build --debug",
+    "tauri:dev": "tauri dev",
+    "vite:build": "vue-tsc && vite build",
+    "vite:dev": "vite",
+    "vite:preview": "vite preview"
   },
   "dependencies": {
     "@picocss/pico": "^1.5.10",
