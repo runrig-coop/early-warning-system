@@ -1,4 +1,4 @@
-import { BaseDirectory, createDir, exists, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
+import { invoke } from '@tauri-apps/api/tauri';
 import { onMounted, reactive } from 'vue';
 import { StatusObject, toStatusObject, RED, YELLOW, GREEN } from './status';
 export interface BackendFarmObject {
@@ -18,35 +18,25 @@ const toBackendFarmObject = (f: FarmListItem): BackendFarmObject =>
   ({ ...f, status: f.status.title });
 
 export default function useFarms() {
-  const cacheDir = '.cache';
-  const cachePath = `${cacheDir}/farms.json`;
-  const cacheOpts: { dir: number } = { dir: BaseDirectory.Resource };
-  const cacheDirOpts = { ...cacheOpts, recursive: true };
   const farms: FarmListItem[] = reactive([]);
 
-  onMounted(async () => {
-    try {
-      if (!exists(cacheDir, cacheOpts)) {
-        await createDir(cacheDir, cacheDirOpts);
-      }
-      const json = await readTextFile(cachePath, cacheOpts);
-      const { farms: cache } = JSON.parse(json);
+  async function load () {
+    invoke('load').then((cache: BackendFarmObject[]): void => {
       const list: FarmListItem[] = cache.map((f) => ({
         ...f, status: toStatusObject(f.status),
       }));
       farms.push(...list);
-    } catch (error) {
-      console.log('No cache found. Error message: ', error.message);
-    }
-  })
+    });
+  }
 
   async function save() {
     const cache: BackendFarmObject[] = farms.map(toBackendFarmObject);
-    const json = JSON.stringify({ farms: cache }, null, 2);
-    return writeTextFile(cachePath, json, cacheOpts)
+    return invoke('save', { farms: cache })
       .then(() => { console.log("Write Success!"); })
       .catch(console.error);
   }
+
+  onMounted(load);
 
   return { farms, save };
 }
